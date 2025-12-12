@@ -19,7 +19,7 @@ class SecurityControllerTest extends WebTestCase
         $crawler = $this->client->request('GET', '/login');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorTextContains('h1', 'SF Mini Cms Admin');
+        $this->assertSelectorTextContains('h1', 'LittleDot Website Admin');
         $this->assertSelectorExists('form#login-form');
     }
 

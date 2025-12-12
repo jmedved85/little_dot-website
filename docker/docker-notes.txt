@@ -14,10 +14,10 @@ docker compose ps
 # Access the application at http://localhost:8090
 
 # Check logs for the Nginx container (optional)
-docker logs nginx-sf_mini_cms
+docker logs nginx-little_dot_website
 
 # Follow logs in real-time (optional)
-docker logs -f nginx-sf_mini_cms
+docker logs -f nginx-little_dot_website
 
 # Stop and remove the containers, networks, and volumes
 docker compose down
@@ -25,12 +25,12 @@ docker compose down
 # Start the containers without build
 docker compose up -d
 
-- php-sf_mini_cms container
-docker exec -it php-sf_mini_cms /bin/bash
+- php-little_dot_website container
+docker exec -it php-little_dot_website /bin/bash
 cat /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-- nginx-sf_mini_cms container
-docker exec -it nginx-sf_mini_cms /bin/bash
+- nginx-little_dot_website container
+docker exec -it nginx-little_dot_website /bin/bash
 
 
 -----

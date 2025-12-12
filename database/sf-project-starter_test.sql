@@ -1,12 +1,12 @@
 -- MySQL dump 10.13  Distrib 8.0.41, for Linux (x86_64)
 --
--- Host: 127.0.0.1    Database: sf-mini-cms_dev
+-- Host: 127.0.0.1    Database: little_dot-website_dev
 -- ------------------------------------------------------
 -- Server version	8.0.39
 
 -- Create the test database
-CREATE DATABASE IF NOT EXISTS `sf-mini-cms_test`;
-USE `sf-mini-cms_test`;
+CREATE DATABASE IF NOT EXISTS `little_dot-website_test`;
+USE `little_dot-website_test`;
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;

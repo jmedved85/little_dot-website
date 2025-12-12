@@ -1,4 +1,4 @@
-# SF Mini Cms
+# LittleDot Website
 
 This is my custom mini-cms for a custom website development with the latest Symfony (version 7). 
 Backend is run by Symfony and Doctrine components.
@@ -42,7 +42,7 @@ Ensure you have the following installed on your machine:
 2. Create a `.env.local` file and configure your database connection:
 
     ```dotenv
-    DATABASE_URL=mysql://root:pass1234@mysql-sf_mini_cms:3306/sf-mini-cms_dev
+    DATABASE_URL=mysql://root:pass1234@mysql-little_dot_website:3306/little_dot-website_dev
     APP_ENV=dev
     APP_DEBUG=true
     ```
@@ -64,7 +64,7 @@ Ensure you have the following installed on your machine:
     ```
 
     ```sql
-    INSERT INTO `sf-mini-cms_dev`.`user` (`id`, `email`, `user_name`, `password`, `roles`, `first_name`, `last_name`, `active`) VALUES (1, 'admin@net.com', 'admin', '$2y$13$woWveCWpnhEiWPirdbvZu.nBRaKujD07uaFiJhkI/eEtQs5z9S36e', '["ROLE_ADMIN"]', 'Admin', 'User', 1);
+    INSERT INTO `little_dot-website_dev`.`user` (`id`, `email`, `user_name`, `password`, `roles`, `first_name`, `last_name`, `active`) VALUES (1, 'admin@net.com', 'admin', '$2y$13$woWveCWpnhEiWPirdbvZu.nBRaKujD07uaFiJhkI/eEtQs5z9S36e', '["ROLE_ADMIN"]', 'Admin', 'User', 1);
     ```
 
     ```bash
@@ -74,7 +74,7 @@ Ensure you have the following installed on your machine:
     ```
 
     ```sql
-    INSERT INTO `sf-mini-cms_dev`.`user` (`id`, `email`, `user_name`, `password`, `roles`, `first_name`, `last_name`, `active`) VALUES (2, 'user@net.com', 'user', '$2y$13$Yfbvi3rzhcRV4Y3Adw4q3ekiq4R01p0n.tEIpwK7ls7bdVivmHu4e', '["ROLE_USER"]', 'Joe', 'Doe', 1);
+    INSERT INTO `little_dot-website_dev`.`user` (`id`, `email`, `user_name`, `password`, `roles`, `first_name`, `last_name`, `active`) VALUES (2, 'user@net.com', 'user', '$2y$13$Yfbvi3rzhcRV4Y3Adw4q3ekiq4R01p0n.tEIpwK7ls7bdVivmHu4e', '["ROLE_USER"]', 'Joe', 'Doe', 1);
     ```
 
 5. Start the Docker containers:
