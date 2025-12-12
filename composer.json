@@ -51,7 +51,8 @@
             "symfony/runtime": true,
             "phpstan/extension-installer": true
         },
-        "sort-packages": true
+        "sort-packages": true,
+        "platform-check": false
     },
     "autoload": {
         "psr-4": {

@@ -11,29 +11,12 @@ git pull origin main || { echo "Failed to pull from git"; exit 1; }
 
 echo
 echo "2. Installing dependencies..."
-~/bin/composer install --no-dev --optimize-autoloader --prefer-dist --no-plugins || { 
-    echo "❌ Failed to install dependencies"; 
-    exit 1; 
-}
-
-# Verify that vendor directory exists
-if [ ! -d "vendor" ]; then
-    echo "❌ Vendor directory not found after composer install!"
-    exit 1
-fi
-
-echo "   ✓ Dependencies installed successfully"
+~/bin/composer install --no-dev --optimize-autoloader --prefer-dist --no-plugins --ignore-platform-req=ext-redis || { echo "Failed to install dependencies"; exit 1; }
 
 echo
 echo "3. Clearing and warming up cache..."
-php bin/console cache:clear --env=prod --no-debug || {
-    echo "❌ Failed to clear cache"
-    exit 1
-}
-php bin/console cache:warmup --env=prod --no-debug || {
-    echo "❌ Failed to warm up cache"
-    exit 1
-}
+php bin/console cache:clear --env=prod --no-debug
+php bin/console cache:warmup --env=prod --no-debug
 
 echo
 echo "4. Installing import maps and compiling assets..."
@@ -58,11 +41,10 @@ if [ -d migrations ] && [ "$(ls -A migrations)" ]; then
     # Run migrations
     echo "   - Running migrations..."
     php bin/console doctrine:migrations:migrate --env=prod --no-interaction || {
-        echo "❌ Migration failed! Please check migration files."
-        # echo "❌ Migration failed! Restoring from backup..."
-        # php bin/console doctrine:database:import --env=prod "backups/${BACKUP_FILE}"
-        # echo "Database restored from backup. Please check migration files."
-        # exit 1
+        echo "❌ Migration failed! Restoring from backup..."
+        php bin/console doctrine:database:import --env=prod "backups/${BACKUP_FILE}"
+        echo "Database restored from backup. Please check migration files."
+        exit 1
     }
     
     # Verify database integrity
