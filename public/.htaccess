@@ -1,0 +1,137 @@
+AddHandler application/x-httpd-php84 .php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # 🔧 Hostinger specific - force HTTPS
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+    
+    # Force WWW or non-WWW (choose one)
+    # FOR WWW:
+    # RewriteCond %{HTTP_HOST} !^www\. [NC]
+    # RewriteRule ^(.*)$ https://www.%{HTTP_HOST}/$1 [R=301,L]
+    
+    # FOR NON-WWW:
+    # RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    # RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+    # 🔒 Block malicious request methods
+    RewriteCond %{REQUEST_METHOD} ^(TRACE|DELETE|TRACK) [NC]
+    RewriteRule .* - [F,L]
+
+    # Block SQL injection patterns in query strings
+    RewriteCond %{QUERY_STRING} (union.*select|insert.*into|delete.*from|drop.*table) [NC]
+    RewriteRule .* - [F,L]
+
+    # 🔒 Block common WordPress attack paths
+    RewriteCond %{REQUEST_URI} ^/wp-admin [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/wp-login\.php [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/wp-config\.php [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/wp-includes [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/xmlrpc\.php$ [NC]
+    RewriteRule .* - [F,L]
+
+    # Block additional common attack patterns
+    RewriteCond %{REQUEST_URI} ^/\.env [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/composer\.json [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/composer\.lock [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/package\.json [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/phpunit\.xml [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/\.git [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/var/ [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/config/ [NC]
+    RewriteRule .* - [F,L]
+
+    # ⚙️ Symfony fallback routing
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ index.php [QSA,L]
+
+    # Prevent script execution in uploads directory
+    RewriteRule ^uploads/(.*)\.php$ - [F,L]
+    RewriteRule ^uploads/(.*)\.phtml$ - [F,L]
+    RewriteRule ^uploads/(.*)\.php5$ - [F,L]
+    RewriteRule ^uploads/(.*)\.php7$ - [F,L]
+    RewriteRule ^uploads/(.*)\.phar$ - [F,L]
+</IfModule>
+
+# 🔐 Block access to sensitive files
+<FilesMatch "(\.env|\.git|\.gitignore|\.gitattributes|composer\.(json|lock)|package\.json|yarn\.lock|symfony\.lock|phpunit\.xml|\.htaccess|\.user\.ini)">
+    Require all denied
+</FilesMatch>
+
+# Block backup and temporary files
+<FilesMatch "\.(bak|backup|old|tmp|swp|~)$">
+    Require all denied
+</FilesMatch>
+
+# 📂 Disable directory listing
+Options -Indexes -MultiViews
+
+# Disable server signature
+ServerSignature Off
+
+# 🛡️ Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # HTTPS - only if you have SSL certificate installed
+    Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+    
+    Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    
+    # CSP - adjust according to your application needs
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: blob:; connect-src 'self' https://api.openai.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';"
+    
+    Header unset X-Powered-By
+    Header unset Server
+</IfModule>
+
+# 📦 Caching for static assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType application/x-javascript "access plus 1 month"
+    
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/ttf "access plus 1 year"
+    
+    ExpiresByType application/pdf "access plus 1 month"
+</IfModule>
+
+# 🗜️ Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+    AddOutputFilterByType DEFLATE application/javascript application/json
+    AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# ⚡ PHP settings
+# NOTE: On Hostinger it's better to use php.ini or hPanel instead of this
+<IfModule mod_php.c>
+    php_flag display_errors Off
+    php_flag log_errors On
+    php_value upload_max_filesize 10M
+    php_value post_max_size 10M
+    php_value max_execution_time 300
+    php_value memory_limit 256M
+</IfModule>
+
+# 🔒 Additional protection for Hostinger
+# Prevent access to cgi-bin
+<IfModule mod_alias.c>
+    RedirectMatch 404 /\..*$
+</IfModule>

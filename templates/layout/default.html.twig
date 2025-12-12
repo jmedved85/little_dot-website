@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% include('components/_header.html.twig') %}
+
+    {% for label, messages in app.flashes %}
+        {% if messages is not empty %}
+            <div class="container mt-3">
+                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                    {% for message in messages %}
+                        <span>{{ message }}</span>
+                    {% endfor %}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+    
+    <main class="container my-5">
+        <div class="row">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    {% include 'components/_footer.html.twig' %}
+
+    {# Cookie Consent Banner #}
+    {% include('components/_cookie_consent.html.twig') %}
+{% endblock %}
