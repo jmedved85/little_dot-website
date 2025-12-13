@@ -11,7 +11,7 @@ git pull origin main || { echo "Failed to pull from git"; exit 1; }
 
 echo
 echo "2. Installing dependencies..."
-~/bin/composer install --no-dev --optimize-autoloader --prefer-dist --no-plugins --ignore-platform-req=ext-redis || { echo "Failed to install dependencies"; exit 1; }
+~/bin/composer install --no-dev --optimize-autoloader --prefer-dist --ignore-platform-req=ext-redis || { echo "Failed to install dependencies"; exit 1; }
 
 echo
 echo "3. Clearing and warming up cache..."
